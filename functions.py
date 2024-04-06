@@ -56,19 +56,30 @@ def craft_question(questions, responses):
 
     return completion.choices[0].message.content
 
-def export():
-    print(os.getenv("GDRIVE_API_CREDENTIALS"))
-
+def export(questions, responses):
     gc = pygsheets.authorize(service_account_env_var = 'GDRIVE_API_CREDENTIALS')
 
-    # Open the google spreadsheet (this has the key from the Greg Burns Fitness Sheet)
+    # Open the google spreadsheet
     sh = gc.open_by_key('1nSrmGO8ZSwJhtitmjnrwXeLhfTq8AVKtcRFKUObUDhY')
 
     # Select the Daily Tracker worksheet
-    wks = sh.worksheet_by_title('Test')
+    wks = sh.worksheet_by_title('Results')
 
-    # Look at first column
-    wks.get_col(1)
+    # Look at first column to find first empty row
+    # Find the next empty row in the first column
+    next_row = 1
+    while wks.get_value((next_row, 1)):
+        next_row += 1
+    
+    column_index = 0
+
+    list_c = list(zip(questions, responses))
 
     # Update values
-    wks.update_value(f"A1", "test")
+    for i in list_c:
+        try:
+            wks.update_value(f"{chr(65 + column_index)}{next_row}", i[0])  # Convert column index to letter
+            wks.update_value(f"{chr(65 + column_index + 1)}{next_row}", i[1])  # Convert column index to letter
+            column_index += 2  # Question in odd columns, response in even columns
+        except IndexError:
+            continue

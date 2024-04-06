@@ -93,7 +93,7 @@ def question_three():
 @app.route("/responses", methods=('GET', 'POST'))
 def responses_page():
     if request.method == 'POST':
-        export()
+        export(questions, responses)
         
         return redirect("/")
     
