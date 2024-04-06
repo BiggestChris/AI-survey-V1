@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block title %}
+    Responses
+{% endblock %}
+{% block content %}
+    
+    <form action="/responses" method="post">
+        <div class="container mb-3">
+            <p>Question 1:</p>
+            <p>{{ questions[0] }}</p>
+            <p>Response 1:</p>
+            <p>{{ responses[0] }}</p>
+            <p>Question 2:</p>
+            <p>{{ questions[1] }}</p>
+            <p>Response 2:</p>
+            <p>{{ responses[1] }}</p>
+            <p>Question 3:</p>
+            <p>{{ questions[2] }}</p>
+            <p>Response 3:</p>
+            <p>{{ responses[2] }}</p>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Print to G-sheet</button>
+
+    </form>
+
+{% endblock %}
