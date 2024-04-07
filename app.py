@@ -41,54 +41,36 @@ questions = [
         "If something you're reading or watching online lets you interact with it (like taking quizzes, voting in polls, or moving things around), are you more likely to keep reading or watching?"
 ]
 
+max_question = 3
+
+
 @app.route("/")
 def index():
-
     return render_template("index.html")
 
 
-@app.route("/1", methods=('GET', 'POST'))
-def question_one():
-    if request.method == 'POST':
-        responses.append(get_survey_response())
+question_number = 1 # Initialise survey
 
-        return redirect("/2")
-    else:
-        question_number = 1
-        question_text = questions[0]
+@app.route("/survey", methods=('GET', 'POST'))
+def question_page():
+    global question_number  # Declare question_number as global
 
-        return render_template("question-layout.html", question_number=question_number, question_text=question_text)
-
-
-@app.route("/2", methods=('GET', 'POST'))
-def question_two():
     if request.method == 'POST':
         responses.append(get_survey_response())
         
-        return redirect("/3")
+        if question_number < max_question:
+            question_number += 1
+            return redirect("/survey")
+        else:
+            return redirect("/")
     
     else:
-        question_number = 2
-        questions[1] = craft_question(questions, responses)
-        question_text = questions[1]
+        if question_number > 1:
+            questions[question_number - 1] = craft_question(questions, responses)
+        question_text = questions[question_number - 1]
 
         return render_template("question-layout.html", question_number=question_number, question_text=question_text)
 
-
-@app.route("/3", methods=('GET', 'POST'))
-def question_three():
-    if request.method == 'POST':
-        responses.append(get_survey_response())
-        
-        return redirect("/")
-    
-    else:
-        question_number = 3
-        questions[2] = craft_question(questions, responses)
-        question_text = questions[2]
-
-        return render_template("question-layout.html", question_number=question_number, question_text=question_text)
-    
 
 @app.route("/responses", methods=('GET', 'POST'))
 def responses_page():
