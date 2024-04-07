@@ -10,21 +10,22 @@ def get_survey_response():
     output = request.form.get('response')
     return output
 
-def craft_question(questions, responses, max_question):
-    rules = '''We are creating a dynamic and responsive survey to determine how people find and engage with educational online content. We have a 
+def craft_question(questions, responses, max_question, survey_objective):
+    rules = '''We are creating a dynamic and responsive survey to help with finding an objective that will be defined shortly. We have a 
     starter survey question, and some example follow-up questions, but we really want to hone in on useful and insightful information a user might give.
     As a result, we want to utilise ChatGPT to have more advanced skip logic by reading a users input to then craft a useful follow-up question.
     This is where you'll come in. Importantly, please produce your response exactly as it should appear in the survey to the user,
     because the API is being called to print your response in directly. So as an example please DON'T preface with "Great! Here's a tailored follow-up question based on their response to the initial question: Follow-up question:"
     '''
 
+    message = ["The survey objective as defined by the user is", survey_objective]
     
-    message = [
+    message.extend([
         "Here's the first fixed question that's being asked: ",
         questions[0],
         "Their response to this question is: ",
         responses[0]
-    ]
+    ])
 
     for i in range(len(responses)):
         try:
@@ -58,7 +59,7 @@ def craft_question(questions, responses, max_question):
 
     return completion.choices[0].message.content
 
-def export(questions, responses):
+def export(questions, responses, survey_objective):
     gc = pygsheets.authorize(service_account_env_var = 'GDRIVE_API_CREDENTIALS')
 
     # Open the google spreadsheet
@@ -77,11 +78,13 @@ def export(questions, responses):
 
     list_c = list(zip(questions, responses))
 
+    wks.update_value(f"{chr(65 + column_index)}{next_row}", survey_objective)
+
     # Update values
     for i in list_c:
         try:
-            wks.update_value(f"{chr(65 + column_index)}{next_row}", i[0])  # Convert column index to letter
-            wks.update_value(f"{chr(65 + column_index + 1)}{next_row}", i[1])  # Convert column index to letter
+            wks.update_value(f"{chr(65 + column_index + 1)}{next_row}", i[0])  # Convert column index to letter
+            wks.update_value(f"{chr(65 + column_index + 2)}{next_row}", i[1])  # Convert column index to letter
             column_index += 2  # Question in odd columns, response in even columns
         except IndexError:
             continue

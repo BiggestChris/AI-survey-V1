@@ -38,15 +38,26 @@ More thoughts
 responses = [] # Initialise response list
 max_question = 5 # Number of questions in survey
 question_number = 1 # Initialise survey
+survey_objective = ""
 questions = init_questions(max_question) # Initialise question bank list
 
 
-@app.route("/")
+@app.route("/", methods=('GET', 'POST'))
 def index():
-    return render_template("index.html")
+    global max_question
+    global survey_objective
+    global questions
+    if request.method == 'POST':
+        max_question = int(request.form.get("question-number"))
+        survey_objective = request.form.get("survey-objective")
+        questions = init_questions(max_question)
+        questions[0] = request.form.get("first-question")
 
+        return redirect("/survey")
 
-question_number = 1 # Initialise survey
+    else:
+        return render_template("index.html")
+
 
 @app.route("/survey", methods=('GET', 'POST'))
 def question_page():
@@ -63,7 +74,7 @@ def question_page():
     
     else:
         if question_number > 1:
-            questions[question_number - 1] = craft_question(questions, responses, max_question)
+            questions[question_number - 1] = craft_question(questions, responses, max_question, survey_objective)
         question_text = questions[question_number - 1]
 
         return render_template("question-layout.html", question_number=question_number, question_text=question_text)
@@ -72,14 +83,14 @@ def question_page():
 @app.route("/responses", methods=('GET', 'POST'))
 def responses_page():
     if request.method == 'POST':
-        export(questions, responses)
+        global survey_objective
+        export(questions, responses, survey_objective)
         
         return redirect("/")
     
     else:
         questions_json = json.dumps(questions)
         responses_json = json.dumps(responses)
-
 
         return render_template("responses.html", questions=questions, responses=responses,
                                questions_json=questions_json, responses_json=responses_json)
