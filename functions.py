@@ -94,7 +94,9 @@ def init_questions(max_question):
     questions = [None for _ in range(max_question)]
 
     questions[0] = "How often do you read/watch educational things online like articles, videos, or social media posts?"
-    questions[1] = "What makes you want to click on something you see online?"
-    questions[2] = "If something you're reading or watching online lets you interact with it (like taking quizzes, voting in polls, or moving things around), are you more likely to keep reading or watching?"
-
+    
     return questions
+
+
+def reset():
+    

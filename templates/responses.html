@@ -4,12 +4,18 @@
 {% endblock %}
 {% block content %}
     
+    <h1>Responses</h1>
+
+    <h3>Survey objective:</h2>
+    <p>{{ survey_objective }}</p>
+
     <form action="/responses" method="post">
         <div class="container mb-3" id="response-box" >
         </div>
 
-        <button class="btn btn-primary" type="submit">Print to G-sheet</button>
-        
+        <div class="container mb-3">
+            <button class="btn btn-primary" type="submit">Print to G-sheet</button>
+        </div>
 
     </form>
 

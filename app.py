@@ -47,11 +47,15 @@ def index():
     global max_question
     global survey_objective
     global questions
+    global question_number
+    global responses
     if request.method == 'POST':
         max_question = int(request.form.get("question-number"))
         survey_objective = request.form.get("survey-objective")
         questions = init_questions(max_question)
         questions[0] = request.form.get("first-question")
+        question_number = 1
+        responses = []
 
         return redirect("/survey")
 
@@ -93,4 +97,4 @@ def responses_page():
         responses_json = json.dumps(responses)
 
         return render_template("responses.html", questions=questions, responses=responses,
-                               questions_json=questions_json, responses_json=responses_json)
+                               questions_json=questions_json, responses_json=responses_json, survey_objective=survey_objective)
