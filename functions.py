@@ -63,7 +63,7 @@ def export(questions, responses):
     sh = gc.open_by_key('1nSrmGO8ZSwJhtitmjnrwXeLhfTq8AVKtcRFKUObUDhY')
 
     # Select the Daily Tracker worksheet
-    wks = sh.worksheet_by_title('Results')
+    wks = sh.worksheet_by_title('Results - 3 questions')
 
     # Look at first column to find first empty row
     # Find the next empty row in the first column
