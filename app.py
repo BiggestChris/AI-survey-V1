@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, url_for, redirect
 import re, os
 import csv
-from functions import get_survey_response, craft_question, export
+from functions import get_survey_response, craft_question, export, init_questions
 import json
 
 app = Flask(__name__)
@@ -35,14 +35,10 @@ More thoughts
 3. Load survey results to other Flask page
 '''
 
-responses = []
-questions = [
-        "How often do you read/watch educational things online like articles, videos, or social media posts?",
-        "What makes you want to click on something you see online?",
-        "If something you're reading or watching online lets you interact with it (like taking quizzes, voting in polls, or moving things around), are you more likely to keep reading or watching?"
-]
-
-max_question = 3
+responses = [] # Initialise response list
+max_question = 5 # Number of questions in survey
+question_number = 1 # Initialise survey
+questions = init_questions(max_question) # Initialise question bank list
 
 
 @app.route("/")
@@ -67,7 +63,7 @@ def question_page():
     
     else:
         if question_number > 1:
-            questions[question_number - 1] = craft_question(questions, responses)
+            questions[question_number - 1] = craft_question(questions, responses, max_question)
         question_text = questions[question_number - 1]
 
         return render_template("question-layout.html", question_number=question_number, question_text=question_text)
