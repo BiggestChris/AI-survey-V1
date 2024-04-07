@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, url_for, redirect
 import re, os
 import csv
 from functions import get_survey_response, craft_question, export
+import json
 
 app = Flask(__name__)
 
@@ -80,5 +81,9 @@ def responses_page():
         return redirect("/")
     
     else:
+        questions_json = json.dumps(questions)
+        responses_json = json.dumps(responses)
 
-        return render_template("responses.html", questions=questions, responses=responses)
+
+        return render_template("responses.html", questions=questions, responses=responses,
+                               questions_json=questions_json, responses_json=responses_json)
