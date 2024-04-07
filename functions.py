@@ -97,6 +97,3 @@ def init_questions(max_question):
     
     return questions
 
-
-def reset():
-    
